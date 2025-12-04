@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:barber_app/pages/get_started_page.dart';
 import 'package:barber_app/pages/home_page.dart';
 import 'package:barber_app/pages/login_page.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen>
     Timer(const Duration(seconds: 4), () {
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const HomeBarberPage(),
+          pageBuilder: (_, __, ___) => const GetStartedPage(),
           transitionDuration: const Duration(milliseconds: 900),
           transitionsBuilder: (_, anim, __, child) {
             return FadeTransition(opacity: anim, child: child);
@@ -137,7 +138,7 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        "Kasir Mini App 💈",
+                        "KasirKu App 💈",
                         style: GoogleFonts.poppins(
                           fontSize: 28,
                           color: Colors.white,

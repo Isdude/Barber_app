@@ -93,7 +93,7 @@ class _PegawaiPageState extends State<PegawaiPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Kasir Mini Servis",
+                      "KasirKu Servis",
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 21,

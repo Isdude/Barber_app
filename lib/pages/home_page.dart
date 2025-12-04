@@ -1,3 +1,4 @@
+import 'package:barber_app/pages/pengeluaran_page.dart';
 import 'package:barber_app/pages/riwayat_page.dart';
 import 'package:barber_app/pages/transaksi_page.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'layanan_item_page.dart';
 import 'pegawai_page.dart';
 import 'pelanggan_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'settings_page.dart';
 
 class HomeBarberPage extends StatefulWidget {
   const HomeBarberPage({super.key});
@@ -25,34 +26,74 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
     {"icon": Icons.settings, "label": "Settings"},
   ];
 
-  String? namaBarber;
-  String? alamatBarber;
+  /// Dropdown popup custom
+  void _openMenuDropdown(BuildContext context) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
 
-  Future<void> getBarberInfo() async {
-    try {
-      final doc = await FirebaseFirestore.instance
-          .collection('info')
-          .doc('dataBarber')
-          .get();
-
-      if (doc.exists) {
-        setState(() {
-          namaBarber = doc['nama'];
-          alamatBarber = doc['alamat'];
-        });
-      }
-    } catch (e) {
-      setState(() {
-        namaBarber = "Error memuat data";
-        alamatBarber = "-";
-      });
-    }
+    showMenu(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      position: RelativeRect.fromRect(
+        Rect.fromPoints(
+          button.localToGlobal(const Offset(-20, 40), ancestor: overlay),
+          button.localToGlobal(const Offset(20, 40), ancestor: overlay),
+        ),
+        Offset.zero & overlay.size,
+      ),
+      items: [
+        _popupItem(Icons.cut, "Layanan / Item", () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (c) => const LayananItemPage()),
+          );
+        }),
+        _popupItem(Icons.history, "Riwayat", () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (c) => const RiwayatPage()),
+          );
+        }),
+        _popupItem(Icons.bar_chart, "Laporan", () {}),
+        _popupItem(Icons.people, "Pelanggan", () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (c) => const PelangganPage()),
+          );
+        }),
+        _popupItem(Icons.person, "Pegawai", () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (c) => const PegawaiPage()),
+          );
+        }),
+        _popupItem(Icons.money_off, "Pengeluaran", () {}),
+        _popupItem(Icons.settings, "Settings", () {
+        }),
+      ],
+    );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getBarberInfo();
+  PopupMenuItem _popupItem(IconData icon, String label, VoidCallback onTap) {
+    return PopupMenuItem(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: Colors.black87),
+          const SizedBox(width: 12),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: 14.5,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -61,6 +102,7 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
       backgroundColor: const Color(0xFFF6F6F6),
       body: Column(
         children: [
+          // ===================== HEADER ==========================
           Container(
             width: double.infinity,
             height: 200,
@@ -91,6 +133,7 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // HEADER TOP
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -113,7 +156,7 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            "Kasir Mini Servis",
+                            "KasirKu Servis",
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 22,
@@ -123,21 +166,28 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
                           ),
                         ],
                       ),
-                      InkWell(
-                        borderRadius: BorderRadius.circular(50),
-                        onTap: () {},
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.menu_rounded,
-                            color: Colors.white,
-                            size: 28,
+
+                      /// MENU BUTTON
+                      Builder(
+                        builder: (context) => InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () => _openMenuDropdown(context),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.menu_rounded,
+                              color: Colors.white,
+                              size: 28,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 22),
+
+                  // SLOGAN
                   Center(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
@@ -160,7 +210,6 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
                             color: Colors.white.withOpacity(0.95),
                             fontSize: 13.5,
                             fontWeight: FontWeight.w500,
-                            letterSpacing: 0.3,
                             height: 1.5,
                           ),
                         ),
@@ -174,92 +223,58 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
 
           const SizedBox(height: 15),
 
+          // ================= BUSINESS CARD ===================
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
             child: Card(
+              elevation: 6,
+              shadowColor: Colors.black.withOpacity(0.12),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(22),
               ),
-              elevation: 5,
-              shadowColor: Colors.black.withOpacity(0.15),
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
+              child: Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(22),
+                  color: Colors.white,
                 ),
                 child: Row(
                   children: [
                     Container(
-                      height: 55,
-                      width: 55,
+                      height: 60,
+                      width: 60,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF3773FF).withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF3773FF),
+                            Color(0xFF639BFF),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.blueAccent.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: const Icon(
-                        Icons.storefront,
-                        color: Color(0xFF3773FF),
-                        size: 35,
+                        Icons.storefront_rounded,
+                        color: Colors.white,
+                        size: 32,
                       ),
                     ),
-                    const SizedBox(width: 14),
+                    const SizedBox(width: 16),
                     Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF3773FF).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Icon(
-                                Icons.location_on_rounded,
-                                color: Color(0xFF3773FF),
-                                size: 22,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    namaBarber ?? "Barbershop",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black87,
-                                      letterSpacing: 0.3,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 3),
-                                  Text(
-                                    alamatBarber ?? "-",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      color: Colors.grey[700],
-                                      height: 1.4,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                      child: Text(
+                        "KasirKu Barbershop",
+                        style: GoogleFonts.poppins(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
                         ),
                       ),
                     ),
@@ -270,6 +285,8 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
           ),
 
           const SizedBox(height: 15),
+
+          // ===================== GRID MENU =====================
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -284,44 +301,33 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
                   final item = menuItems[index];
                   return InkWell(
                     borderRadius: BorderRadius.circular(20),
-                    splashColor: const Color(0xFF3773FF).withOpacity(0.1),
                     onTap: () {
                       final label = item['label'];
+
                       if (label == "Layanan / Item") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LayananItemPage(),
-                          ),
-                        );
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (c) => const LayananItemPage()));
                       } else if (label == "Pegawai") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PegawaiPage(),
-                          ),
-                        );
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (c) => const PegawaiPage()));
                       } else if (label == "Pelanggan") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PelangganPage(),
-                          ),
-                        );
-                      }else if (label == "Riwayat") {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const RiwayatPage(),
-                          ),
-                        );
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (c) => const PelangganPage()));
+                      } else if (label == "Riwayat") {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (c) => const RiwayatPage()));
+                      }else if (label == "Settings") {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (c) => const SettingsPage()));
+                      }else if (label == "Pengeluaran") {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (c) => const PengeluaranPage()));
                       }
                     },
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 250),
-                      curve: Curves.easeOut,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.95),
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -329,15 +335,9 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
                             blurRadius: 10,
                             offset: const Offset(3, 4),
                           ),
-                          BoxShadow(
-                            color: Colors.white.withOpacity(0.7),
-                            blurRadius: 8,
-                            offset: const Offset(-3, -3),
-                          ),
                         ],
-                        border: Border.all(
-                          color: Colors.grey.withOpacity(0.15),
-                        ),
+                        border:
+                            Border.all(color: Colors.grey.withOpacity(0.15)),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -351,15 +351,6 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: const Color(
-                                    0xFF3773FF,
-                                  ).withOpacity(0.3),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
                             ),
                             child: Icon(
                               item['icon'],
@@ -375,7 +366,6 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
                               fontSize: 13.5,
                               fontWeight: FontWeight.w600,
                               color: Colors.black87,
-                              letterSpacing: 0.2,
                             ),
                           ),
                         ],
@@ -387,6 +377,7 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
             ),
           ),
 
+          // ===================== BUTTON TRANSAKSI =====================
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
             child: SizedBox(
@@ -397,9 +388,7 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const TransaksiPage(),
-                    ),
+                    MaterialPageRoute(builder: (c) => const TransaksiPage()),
                   );
                 },
                 child: Ink(
@@ -410,24 +399,17 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF3773FF).withOpacity(0.4),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
                   ),
                   child: Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
+                          padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.15),
                             shape: BoxShape.circle,
                           ),
-                          padding: const EdgeInsets.all(6),
                           child: const Icon(
                             Icons.shopping_cart_checkout,
                             color: Colors.white,
@@ -441,7 +423,6 @@ class _HomeBarberPageState extends State<HomeBarberPage> {
                             fontSize: 17,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
-                            letterSpacing: 0.5,
                           ),
                         ),
                       ],

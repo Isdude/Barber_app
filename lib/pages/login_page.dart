@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/barber.jpg"),
+                image: AssetImage("assets/get.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -80,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Kasir Barbershop",
+                      "KasirKu Barbershop",
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 32,
@@ -137,10 +137,10 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(10),
                         gradient: const LinearGradient(
                           colors: [
-                            Color(0xFFE63946),
-                            Colors.white,
-                            Color(0xFF1D3557),
-                          ],
+                  Color(0xFF0047FF),
+                  Color(0xFF3797FF),
+                  Color(0xFF5AD2FF),
+                ],
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                         ),
