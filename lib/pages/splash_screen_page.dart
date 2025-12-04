@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:barber_app/pages/get_started_page.dart';
-import 'package:barber_app/pages/home_page.dart';
-import 'package:barber_app/pages/login_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:google_fonts/google_fonts.dart';
